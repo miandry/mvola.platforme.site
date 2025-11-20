@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#4f46e5">
+<title>Generate Code</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mvola</title>
+ <link rel="manifest" href="/manifest.json">
+  
+<link href="/tailwind.min.css" rel="stylesheet">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
+<style>
+:where([class^="ri-"])::before { content: "\f3c2"; }
+body {
+background-color: #f9fafb;
+font-family: 'Inter', sans-serif;
+overflow-x: hidden;
+}
+aside {
+z-index: 40;
+}
+main {
+min-height: 100vh;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+-webkit-appearance: none;
+margin: 0;
+}
+input[type=number] {
+-moz-appearance: textfield;
+}
+.bg-primary {
+    background-color: rgb(59 130 246);
+}
+</style>
+</head>
+<body class="min-h-screen flex relative">
+<div id="overlay" class="fixed inset-0 bg-black opacity-50 z-30 hidden lg:hidden"></div>
+
+<main class="flex-1 lg:ml-64">
+<div class="flex items-center justify-between p-4 lg:hidden bg-white shadow-sm">
+<button id="openSidebar" class="text-gray-500 hover:text-gray-700">
+<div class="w-5 h-5 flex items-center justify-center">
+<i class="ri-menu-line"></i>
+</div>
+</button>
+<h1 class="font-['Pacifico'] text-xl text-primary">logo</h1>
+<div class="w-5"></div>
+</div>
+<div class="max-w-md mx-auto p-4 lg:p-6 bg-white shadow-lg rounded-lg my-4 lg:my-8">
+<header class="mb-6 text-center">
+<h1 class="text-2xl font-bold text-gray-800">Générer un Code</h1>
+<p class="text-gray-600 text-sm mt-1">Créez une chaîne formatée basée sur vos entrées</p>
+</header>
+<form id="codeForm" class="space-y-6">
+<div class="space-y-2">
+<label for="mvolaType" class="block text-sm font-medium text-gray-700">Type de Mvola</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<div class="w-5 h-5 flex items-center justify-center text-gray-400">
+<i class="ri-bank-line"></i>
+</div>
+</div>
+<select id="mvolaType" class="block w-full pl-10 pr-8 py-2 border border-gray-300 rounded-button text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary appearance-none bg-white">
+<option value="entreprise">Mvola Entreprise</option>
+<option value="personnes">Mvola Personnes</option>
+</select>
+<div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+<div class="w-5 h-5 flex items-center justify-center text-gray-400">
+<i class="ri-arrow-down-s-line"></i>
+</div>
+</div>
+</div>
+</div>
+<div class="space-y-2">
+<label for="phone" class="block text-sm font-medium text-gray-700">Numéro de téléphone</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<div class="w-5 h-5 flex items-center justify-center text-gray-400">
+<i class="ri-smartphone-line"></i>
+</div>
+</div>
+<input type="tel" id="phone" name="phone" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-button text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Enter phone number">
+</div>
+<p id="phoneError" class="text-red-500 text-xs hidden">Please enter a valid phone number</p>
+</div>
+<div class="space-y-2">
+<label for="amount" class="block text-sm font-medium text-gray-700">Montant</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<div class="w-5 h-5 flex items-center justify-center text-gray-400">
+<i class="ri-money-dollar-circle-line"></i>
+</div>
+</div>
+<input type="text" id="amount" name="amount" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-button text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Enter amount">
+</div>
+<p id="amountError" class="text-red-500 text-xs hidden">Please enter a valid amount</p>
+</div>
+<div class="space-y-2">
+<label class="block text-sm font-medium text-gray-700">Code généré</label>
+<div class="relative">
+<input type="text" id="result" class="block w-full pr-20 py-2 px-3 bg-gray-50 border border-gray-300 rounded-button text-gray-700 focus:outline-none" readonly placeholder="Code will appear here">
+<div class="absolute inset-y-0 right-0 flex items-center">
+<button type="button" id="callBtn" class="px-2 flex items-center whitespace-nowrap !rounded-button">
+<div class="w-5 h-5 flex items-center justify-center text-gray-500 hover:text-primary">
+<i class="ri-phone-line"></i>
+</div>
+</button>
+<button type="button" id="copyBtn" class="px-2 flex items-center whitespace-nowrap !rounded-button">
+<div class="w-5 h-5 flex items-center justify-center text-gray-500 hover:text-primary">
+<i class="ri-file-copy-line"></i>
+</div>
+</button>
+</div>
+</div>
+<p id="copyMessage" class="text-green-500 text-xs text-center hidden">Copied to clipboard!</p>
+</div>
+<div class="flex space-x-4">
+<button type="button" id="generateBtn" class="flex-1 bg-primary hover:bg-primary/90 text-white py-2 px-4 rounded-button shadow-sm transition duration-150 whitespace-nowrap !rounded-button">
+Générer
+</button>
+<button type="button" id="clearBtn" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 px-4 rounded-button shadow-sm transition duration-150 whitespace-nowrap !rounded-button">
+Effacer
+</button>
+</div>
+</form>
+<div class="mt-8 border-t pt-6">
+<div class="flex justify-between items-center mb-4">
+<h2 class="text-lg font-medium text-gray-800">Historique</h2>
+<div class="flex items-center gap-4">
+<p class="text-sm text-gray-600">Total: <span id="totalAmount" class="font-medium">0 Ar</span></p>
+<button type="button" id="clearHistoryBtn" class="text-sm text-red-500 hover:text-red-700 whitespace-nowrap !rounded-button">
+Effacer l'historique
+</button>
+</div>
+</div>
+<div id="historyContainer" class="max-h-60 overflow-y-auto rounded-md border border-gray-200">
+<ul id="historyList" class="divide-y divide-gray-200"></ul>
+</div>
+<p id="emptyHistory" class="text-gray-500 text-sm text-center py-4">Aucun historique</p>
+</div>
+</div>
+<script id="phoneValidationScript">
+document.addEventListener("DOMContentLoaded", function () {
+  const phoneInput = document.getElementById("phone");
+  const phoneError = document.getElementById("phoneError");
+  phoneInput.addEventListener("input", function (e) {
+    // Remove non-numeric characters
+    let value = e.target.value.replace(/\D/g, "");
+    // Limit to 15 digits (international standard)
+    if (value.length > 15) {
+      value = value.substring(0, 15);
+    }
+    e.target.value = value;
+    // Validate phone number (simple validation - just checking if it's not empty)
+    if (value.length < 8) {
+      phoneError.classList.remove("hidden");
+    } else {
+      phoneError.classList.add("hidden");
+    }
+  });
+});
+</script>
+<script id="amountFormattingScript">
+document.addEventListener("DOMContentLoaded", function () {
+  const amountInput = document.getElementById("amount");
+  const amountError = document.getElementById("amountError");
+  amountInput.addEventListener("input", function (e) {
+    // Remove all non-numeric characters
+    let value = e.target.value.replace(/[^\d]/g, "");
+    if (value) {
+      // Format with thousand separators
+      const formattedValue = Number(value)
+        .toLocaleString("en-US")
+        .replace(/,/g, " ");
+      e.target.value = formattedValue + " Ar";
+    } else {
+      e.target.value = "";
+    }
+    // Validate amount (simple validation - just checking if it's not empty)
+    if (!value) {
+      amountError.classList.remove("hidden");
+    } else {
+      amountError.classList.add("hidden");
+    }
+  });
+  // Handle focus to position cursor correctly
+  amountInput.addEventListener("focus", function (e) {
+    if (e.target.value) {
+      // Move cursor to the beginning of the input
+      setTimeout(() => {
+        e.target.selectionStart = 0;
+        e.target.selectionEnd = 0;
+      }, 0);
+    }
+  });
+});
+</script>
+<script id="codeGenerationScript">
+document.addEventListener("DOMContentLoaded", function () {
+  const phoneInput = document.getElementById("phone");
+  const amountInput = document.getElementById("amount");
+  const resultInput = document.getElementById("result");
+  const generateBtn = document.getElementById("generateBtn");
+  const clearBtn = document.getElementById("clearBtn");
+  const callBtn = document.getElementById("callBtn");
+  const phoneError = document.getElementById("phoneError");
+  const amountError = document.getElementById("amountError");
+  callBtn.addEventListener("click", function () {
+    const phone = phoneInput.value.trim();
+    if (phone) {
+      window.location.href = `tel:${phone}`;
+    }
+  });
+  generateBtn.addEventListener("click", function () {
+    // Get values
+    const phone = phoneInput.value.trim();
+    const amountWithCurrency = amountInput.value.trim();
+    const mvolaType = document.getElementById("mvolaType").value;
+    // Extract numeric amount
+    const amount = amountWithCurrency.replace(/\D/g, "");
+    // Validate inputs
+    let isValid = true;
+    if (phone.length < 8) {
+      phoneError.classList.remove("hidden");
+      isValid = false;
+    } else {
+      phoneError.classList.add("hidden");
+    }
+    if (!amount) {
+      amountError.classList.remove("hidden");
+      isValid = false;
+    } else {
+      amountError.classList.add("hidden");
+    }
+    if (isValid) {
+      // Generate code based on Mvola type
+      let generatedCode;
+      if (mvolaType === "entreprise") {
+        generatedCode = `#111*1*3*2*${phone}*${amount}*2#`;
+      } else {
+        generatedCode = `#111*1*2*${phone}*${amount}*2#`;
+      }
+      // Check for duplicates in history
+      const history = JSON.parse(localStorage.getItem("codeHistory") || "[]");
+      const isDuplicate = history.some((item) => {
+        return item.code === generatedCode;
+      });
+      const duplicatePhone = history.some((item) => {
+        const itemCode = item.code;
+        const [itemPhone] = itemCode.match(/\*(\d+)\*\d+\*2#$/).slice(1);
+        return itemPhone === phone;
+      });
+      if (isDuplicate || duplicatePhone) {
+        const warningDialog = document.createElement("div");
+        warningDialog.className =
+          "fixed inset-0 flex items-center justify-center z-50";
+        warningDialog.innerHTML = `
+<div class="fixed inset-0 bg-black/50"></div>
+<div class="bg-white rounded-lg p-6 max-w-sm mx-4 relative z-10">
+<h3 class="text-lg font-medium text-gray-900 mb-4">Warning</h3>
+<p class="text-gray-600 mb-6">${isDuplicate ? "This phone number and amount combination has already been used." : "This phone number has been used before. Are you sure you want to continue?"}</p>
+<div class="flex gap-3">
+${
+  duplicatePhone && !isDuplicate
+    ? `
+<button class="flex-1 bg-gray-200 text-gray-700 px-4 py-2 rounded-button" onclick="this.closest('.fixed').remove()">Cancel</button>
+<button class="flex-1 bg-primary text-white px-4 py-2 rounded-button" onclick="generateCodeForDuplicatePhone(this)">Continue</button>
+`
+    : `
+<button class="w-full bg-primary text-white px-4 py-2 rounded-button" onclick="this.closest('.fixed').remove()">OK</button>
+`
+}
+</div>
+</div>
+`;
+        document.body.appendChild(warningDialog);
+        if (!isDuplicate) {
+          window.generateCodeForDuplicatePhone = function (btn) {
+            resultInput.value = generatedCode;
+            addToHistory(generatedCode);
+            document.getElementById("copyBtn").classList.remove("hidden");
+            btn.closest(".fixed").remove();
+          };
+        }
+      } else {
+        resultInput.value = generatedCode;
+        // Add to history
+        addToHistory(generatedCode);
+        // Show copy button
+        document.getElementById("copyBtn").classList.remove("hidden");
+      }
+    }
+  });
+  const clearPhoneBtn = document.createElement("button");
+  clearPhoneBtn.type = "button";
+  clearPhoneBtn.className =
+    "absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600";
+  clearPhoneBtn.innerHTML =
+    '<div class="w-5 h-5 flex items-center justify-center"><i class="ri-close-line"></i></div>';
+  phoneInput.parentElement.appendChild(clearPhoneBtn);
+  const clearAmountBtn = document.createElement("button");
+  clearAmountBtn.type = "button";
+  clearAmountBtn.className =
+    "absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600";
+  clearAmountBtn.innerHTML =
+    '<div class="w-5 h-5 flex items-center justify-center"><i class="ri-close-line"></i></div>';
+  amountInput.parentElement.appendChild(clearAmountBtn);
+  clearPhoneBtn.addEventListener("click", function () {
+    phoneInput.value = "";
+    phoneError.classList.add("hidden");
+    resultInput.value = "";
+    document.getElementById("copyMessage").classList.add("hidden");
+  });
+  clearAmountBtn.addEventListener("click", function () {
+    amountInput.value = "";
+    amountError.classList.add("hidden");
+    resultInput.value = "";
+    document.getElementById("copyMessage").classList.add("hidden");
+  });
+  clearBtn.addEventListener("click", function () {
+    phoneInput.value = "";
+    amountInput.value = "";
+    resultInput.value = "";
+    phoneError.classList.add("hidden");
+    amountError.classList.add("hidden");
+    document.getElementById("copyMessage").classList.add("hidden");
+  });
+});
+</script>
+<script id="clipboardScript">
+document.addEventListener("DOMContentLoaded", function () {
+  const copyBtn = document.getElementById("copyBtn");
+  const resultInput = document.getElementById("result");
+  const copyMessage = document.getElementById("copyMessage");
+  copyBtn.addEventListener("click", function () {
+    if (resultInput.value) {
+      // Copy to clipboard
+      resultInput.select();
+      document.execCommand("copy");
+      // Show copy message
+      copyMessage.classList.remove("hidden");
+      // Hide message after 2 seconds
+      setTimeout(() => {
+        copyMessage.classList.add("hidden");
+      }, 2000);
+    }
+  });
+  // Add event listener for history copy and call buttons
+  document.addEventListener("click", function (e) {
+    if (e.target.closest(".history-copy-btn")) {
+      const codeElement = e.target.closest("li").querySelector(".history-code");
+      const code = codeElement.textContent;
+      // Create temporary textarea to copy text
+      const textarea = document.createElement("textarea");
+      textarea.value = code;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+      // Show temporary copy message
+      const copyMsg = e.target.closest("li").querySelector(".history-copy-msg");
+      copyMsg.classList.remove("hidden");
+      setTimeout(() => {
+        copyMsg.classList.add("hidden");
+      }, 2000);
+    }
+    if (e.target.closest(".history-call-btn")) {
+      const codeElement = e.target.closest("li").querySelector(".history-code");
+      const code = codeElement.textContent;
+      const historyItem = e.target.closest("li");
+      const statusElement = historyItem.querySelector(".payment-status");
+      if (!statusElement) {
+        const status = document.createElement("span");
+        status.className =
+          "payment-status text-xs font-medium text-green-500 ml-2";
+        status.textContent = "Paid";
+        historyItem.querySelector(".history-code").appendChild(status);
+        const history = JSON.parse(localStorage.getItem("codeHistory") || "[]");
+        const itemIndex = Array.from(historyList.children).indexOf(historyItem);
+        if (history[itemIndex]) {
+          history[itemIndex].paid = true;
+          localStorage.setItem("codeHistory", JSON.stringify(history));
+        }
+      }
+      window.location.href = `tel:${code}`;
+    }
+  });
+});
+</script>
+
+<script id="historyManagementScript">
+document.addEventListener("DOMContentLoaded", function () {
+  const historyList = document.getElementById("historyList");
+  const emptyHistory = document.getElementById("emptyHistory");
+  const clearHistoryBtn = document.getElementById("clearHistoryBtn");
+  const historyContainer = document.getElementById("historyContainer");
+  // Load history from localStorage
+  loadHistory();
+  // Add to history function
+  window.addToHistory = function (code) {
+    const history = JSON.parse(localStorage.getItem("codeHistory") || "[]");
+    // Add new entry with timestamp
+    const newEntry = {
+      code: code,
+      timestamp: new Date().toISOString(),
+    };
+    // Add to beginning of array
+    history.unshift(newEntry);
+    // Limit to 10 entries
+    if (history.length > 10) {
+      history.pop();
+    }
+    // Save to localStorage
+    localStorage.setItem("codeHistory", JSON.stringify(history));
+    // Update UI
+    loadHistory();
+  };
+  // Load history function
+  function loadHistory() {
+    const history = JSON.parse(localStorage.getItem("codeHistory") || "[]");
+    // Clear current list
+    historyList.innerHTML = "";
+    let totalAmount = 0;
+    // Calculate total amount from all history items
+    history.forEach((item) => {
+      const amount = parseInt(item.code.match(/\*(\d+)\*2#$/)[1]);
+      totalAmount += amount;
+    });
+    // Update total amount display
+    document.getElementById("totalAmount").textContent =
+      totalAmount.toLocaleString("fr-FR") + " Ar";
+    if (history.length === 0) {
+      emptyHistory.classList.remove("hidden");
+      historyContainer.classList.add("hidden");
+    } else {
+      emptyHistory.classList.add("hidden");
+      historyContainer.classList.remove("hidden");
+      // Add each history item
+      history.forEach((item, index) => {
+        // Extract amount from code
+        const amount = item.code.match(/\*(\d+)\*2#$/)[1];
+        totalAmount += parseInt(amount);
+        const li = document.createElement("li");
+        li.className = index % 2 === 0 ? "bg-white" : "bg-gray-50";
+        const date = new Date(item.timestamp);
+        const formattedDate = date.toLocaleString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        li.innerHTML = `
+<div class="flex justify-between items-center p-3">
+<div class="flex-1 pr-4">
+<p class="history-code text-sm font-medium text-gray-800 break-all">
+${item.code}
+${item.paid ? '<span class="payment-status text-xs font-medium text-green-500 ml-2">Payé</span>' : ""}
+</p>
+<p class="text-sm text-gray-600 mt-1">Montant: ${parseInt(amount).toLocaleString("fr-FR")} Ar</p>
+<p class="text-xs text-gray-500">${formattedDate}</p>
+<p class="history-copy-msg text-xs text-green-500 hidden">Copied!</p>
+</div>
+<div class="flex gap-2">
+<button class="history-call-btn p-2 text-gray-500 hover:text-primary whitespace-nowrap !rounded-button">
+<div class="w-5 h-5 flex items-center justify-center">
+<i class="ri-phone-line"></i>
+</div>
+</button>
+<button class="history-copy-btn p-2 text-gray-500 hover:text-primary whitespace-nowrap !rounded-button">
+<div class="w-5 h-5 flex items-center justify-center">
+<i class="ri-file-copy-line"></i>
+</div>
+</button>
+</div>
+</div>
+`;
+        historyList.appendChild(li);
+      });
+    }
+  }
+  // Clear history button
+  clearHistoryBtn.addEventListener("click", function () {
+    localStorage.removeItem("codeHistory");
+    loadHistory();
+  });
+});
+</script>
+<script id="mobileSidebarScript">
+document.addEventListener("DOMContentLoaded", function () {
+  const sidebar = document.querySelector("aside");
+  const openSidebarBtn = document.getElementById("openSidebar");
+  const closeSidebarBtn = document.getElementById("closeSidebar");
+  const overlay = document.getElementById("overlay");
+  function openSidebar() {
+    sidebar.classList.remove("-translate-x-full");
+    overlay.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+  }
+  function closeSidebar() {
+    sidebar.classList.add("-translate-x-full");
+    overlay.classList.add("hidden");
+    document.body.style.overflow = "";
+  }
+  openSidebarBtn.addEventListener("click", openSidebar);
+  closeSidebarBtn.addEventListener("click", closeSidebar);
+  overlay.addEventListener("click", closeSidebar);
+  // Close sidebar when clicking on a nav link (mobile only)
+  const navLinks = document.querySelectorAll("nav a");
+  navLinks.forEach((link) => {
+    link.addEventListener("click", () => {
+      if (window.innerWidth < 1024) {
+        closeSidebar();
+      }
+    });
+  });
+  // Handle window resize
+  window.addEventListener("resize", () => {
+    if (window.innerWidth >= 1024) {
+      closeSidebar();
+    }
+  });
+});
+</script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('Service Worker enregistré', reg))
+        .catch(err => console.error('Erreur Service Worker', err));
+    }
+  </script>
+  
+    <script id="mobileSidebarScript">
+    document.addEventListener("DOMContentLoaded", function () {
+        const sidebar = document.querySelector("aside");
+        const openSidebarBtn = document.getElementById("openSidebar");
+        const closeSidebarBtn = document.getElementById("closeSidebar");
+        const overlay = document.getElementById("overlay");
+        function openSidebar() {
+            sidebar.classList.remove("-translate-x-full");
+            overlay.classList.remove("hidden");
+            document.body.style.overflow = "hidden";
+        }
+        function closeSidebar() {
+            sidebar.classList.add("-translate-x-full");
+            overlay.classList.add("hidden");
+            document.body.style.overflow = "";
+        }
+        openSidebarBtn.addEventListener("click", openSidebar);
+        closeSidebarBtn.addEventListener("click", closeSidebar);
+        const navLinks = document.querySelectorAll("nav a");
+        navLinks.forEach((link) => {
+            link.addEventListener("click", () => {
+                if (window.innerWidth < 1024) {
+                    closeSidebar();
+                }
+            });
+        });
+        // Handle window resize
+        window.addEventListener("resize", () => {
+            if (window.innerWidth >= 1024) {
+                closeSidebar();
+            }
+        });
+    });
+</script>
+  
+  <script>
+    /****************************************************************
+     * 1) Bloquer ctrl/cmd + plus/minus/0 et roulette avec ctrl
+     ****************************************************************/
+    window.addEventListener('keydown', function(e) {
+      // e.key: "=", "-", "0", "+"; on checke aussi e.code
+      const isCtrl = e.ctrlKey || e.metaKey; // ctrl (Windows) ou cmd (Mac)
+      if (isCtrl) {
+        // Bloquer +, -, =, 0 (différentes claviers peuvent envoyer "=" pour +)
+        if (e.key === '+' || e.key === '-' || e.key === '=' || e.key === '0') {
+          e.preventDefault();
+          e.stopPropagation();
+          return false;
+        }
+        // Bloquer Ctrl + Mousewheel is handled in wheel listener below
+      }
+    }, { passive: false });
+
+    // Bloquer la roulette quand ctrl/cmd est pressé
+    window.addEventListener('wheel', function(e) {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
+    }, { passive: false });
+
+    /****************************************************************
+     * 2) Empêcher le pinch-zoom sur mobile / iOS / Android
+     *    - "gesturestart" est iOS Safari specific
+     *    - On empêche le double-tap zoom et le pinch en interceptant touch events
+     ****************************************************************/
+    // iOS Safari: gesturestart
+    window.addEventListener('gesturestart', function(e) {
+      e.preventDefault();
+    }, { passive: false });
+
+    // Empêcher le double tap zoom (trick: bloquer double tap rapid)
+    (function() {
+      let lastTouch = 0;
+      window.addEventListener('touchend', function(e) {
+        const now = Date.now();
+        if (now - lastTouch <= 300) {
+          // double-tap détecté -> empêcher
+          e.preventDefault();
+        }
+        lastTouch = now;
+      }, { passive: false });
+    })();
+
+    // Empêcher pinch (deux doigts) — on peut repérer touchmove avec 2 touches
+    window.addEventListener('touchmove', function(e) {
+      if (e.touches && e.touches.length > 1) {
+        // si plus d'un doigt, c'est probablement un pinch ou rotation -> bloquer
+        e.preventDefault();
+      } else {
+        // possibilité de bloquer le défilement horizontal: regarder le déplacement X vs Y
+        // si vous voulez empêcher tout mouvement horizontal sur un touch simple, décommentez ci-dessous.
+        //
+        // const touch = e.touches[0];
+        // // besoin de logique additionnelle pour déterminer dx/dy — laissé simple ici
+      }
+    }, { passive: false });
+
+    /****************************************************************
+     * 3) Optionnel : Empêcher scroll horizontal par clavier (flèche gauche/droite, space)
+     ****************************************************************/
+    window.addEventListener('keydown', function(e) {
+      // Flèches gauche/droite, Home, End, PageUp/PageDown, espace (parfois) provoquent déplacement
+      const blockedKeys = ['ArrowLeft', 'ArrowRight'];
+      if (blockedKeys.includes(e.key)) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
+    }, { passive: false });
+
+    /****************************************************************
+     * 4) Sécurité : s'assurer que body ne dépasse pas largeur viewport
+     ****************************************************************/
+    function clampBodyWidth() {
+      document.documentElement.style.overflowX = 'hidden';
+      document.body.style.overflowX = 'hidden';
+      document.body.style.maxWidth = '100vw';
+    }
+    // initial + on resize
+    clampBodyWidth();
+    window.addEventListener('resize', clampBodyWidth);
+  </script>
+</body>
+</html>

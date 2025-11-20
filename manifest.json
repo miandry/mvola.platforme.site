@@ -1,0 +1,9 @@
+
+{
+  "name": "Ma Super PWA",
+  "short_name": "PWA",
+  "start_url": "/index.html",
+   "display": "fullscreen",
+  "background_color": "#ffffff",
+  "theme_color": "#007bff"
+}
