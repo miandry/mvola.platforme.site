@@ -907,9 +907,17 @@
     // EXÉCUTION AU CHARGEMENT DE LA PAGE
     // =========================================================================
     document.addEventListener("DOMContentLoaded", function () {
-      initApp();
+  
+      const history = loadHistory();
+      history.forEach((item, index) => {
+        const amount = extractAmountFromCode(item.code);
+        const li = createHistoryListItem(item, index, amount);
+       DOM_ELEMENTS.historyList.appendChild(li);
+      });
+       initApp();
       initHistoryManagement();
     });
+
   </script>
 </body>
 </html>
