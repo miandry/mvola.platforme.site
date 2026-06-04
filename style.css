@@ -1,7 +1,37 @@
+:where([class^="ri-"])::before { content: "\f3c2"; }
 
 body {
-  font-family: sans-serif;
-  background-color: #f5f5f5;
-  padding: 2rem;
-  text-align: center;
+  background-color: #f9fafb;
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+aside {
+  z-index: 40;
+}
+
+main {
+  min-height: 100vh;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.bg-primary {
+  background-color: #4f46e5;
+}
+
+.text-primary {
+  color: #4f46e5;
+}
+
+.rounded-button {
+  border-radius: 0.375rem;
 }
