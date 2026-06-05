@@ -4,6 +4,7 @@
 const APP_CONFIG = {
   maxHistoryEntries: 10,
   localStorageKey: 'codeHistory',
+  settingsKey: 'mvolaSettings',
   phoneMaxLength: 10
 };
 
@@ -35,8 +36,61 @@ const DOM_ELEMENTS = {
   openSidebarBtn: document.getElementById('openSidebar'),
   closeSidebarBtn: document.getElementById('closeSidebar'),
   overlay: document.getElementById('overlay'),
-  sidebar: document.querySelector('aside')
+  sidebar: document.querySelector('aside'),
+
+  // Navigation et Sections
+  navGenerator: document.getElementById('navGenerator'),
+  navSettings: document.getElementById('navSettings'),
+  generatorSection: document.getElementById('generatorSection'),
+  settingsSection: document.getElementById('settingsSection'),
+
+  // Paramètres
+  ussdEntrepriseInput: document.getElementById('ussdEntreprise'),
+  ussdPersonnesInput: document.getElementById('ussdPersonnes'),
+  saveSettingsBtn: document.getElementById('saveSettingsBtn'),
+  settingsMessage: document.getElementById('settingsMessage')
 };
+
+// =========================================================================
+// CONFIGURATION DYNAMIQUE
+// =========================================================================
+
+const CONFIG = {
+  ussdEntreprise: '#111*1*3*2*',
+  ussdPersonnes: '#111*1*2*'
+};
+
+/**
+ * Charge les paramètres depuis le localStorage
+ */
+function loadSettings() {
+  const savedSettings = JSON.parse(localStorage.getItem(APP_CONFIG.settingsKey) || "{}");
+  if (savedSettings.ussdEntreprise) CONFIG.ussdEntreprise = savedSettings.ussdEntreprise;
+  if (savedSettings.ussdPersonnes) CONFIG.ussdPersonnes = savedSettings.ussdPersonnes;
+
+  // Mettre à jour les inputs des paramètres
+  if (DOM_ELEMENTS.ussdEntrepriseInput) DOM_ELEMENTS.ussdEntrepriseInput.value = CONFIG.ussdEntreprise;
+  if (DOM_ELEMENTS.ussdPersonnesInput) DOM_ELEMENTS.ussdPersonnesInput.value = CONFIG.ussdPersonnes;
+}
+
+/**
+ * Sauvegarde les paramètres dans le localStorage
+ */
+function saveSettings() {
+  CONFIG.ussdEntreprise = DOM_ELEMENTS.ussdEntrepriseInput.value.trim() || '#111*1*3*2*';
+  CONFIG.ussdPersonnes = DOM_ELEMENTS.ussdPersonnesInput.value.trim() || '#111*1*2*';
+
+  localStorage.setItem(APP_CONFIG.settingsKey, JSON.stringify({
+    ussdEntreprise: CONFIG.ussdEntreprise,
+    ussdPersonnes: CONFIG.ussdPersonnes
+  }));
+
+  // Afficher le message de succès
+  DOM_ELEMENTS.settingsMessage.classList.remove('hidden');
+  setTimeout(() => {
+    DOM_ELEMENTS.settingsMessage.classList.add('hidden');
+  }, 2000);
+}
 
 // =========================================================================
 // FONCTIONS UTILITAIRES
@@ -74,11 +128,13 @@ function formatNumberOnly(input) {
  * @returns {string} Le code Mvola généré
  */
 function generateMvolaCode(mvolaType, phone, amount) {
-  if (mvolaType === "entreprise") {
-    return `#111*1*3*2*${phone}*${amount}*2*1#`;
-  } else {
-    return `#111*1*2*${phone}*${amount}*2*1#`;
+  const prefix = mvolaType === "entreprise" ? CONFIG.ussdEntreprise : CONFIG.ussdPersonnes;
+  // S'assurer que le préfixe se termine par * s'il n'est pas vide et ne se finit pas par *
+  let formattedPrefix = prefix;
+  if (formattedPrefix && !formattedPrefix.endsWith('*') && !formattedPrefix.endsWith('#')) {
+    formattedPrefix += '*';
   }
+  return `${formattedPrefix}${phone}*${amount}*2*1#`;
 }
 
 /**
@@ -217,12 +273,12 @@ function createHistoryListItem(item, index, amount) {
         <p class="history-copy-msg text-xs text-green-500 hidden">Copié!</p>
       </div>
       <div class="flex gap-2">
-        <button class="history-call-btn p-2 text-gray-500 hover:text-primary whitespace-nowrap !rounded-button">
+        <button class="history-call-btn p-2 text-gray-500 hover:text-primary whitespace-nowrap rounded-button">
           <div class="w-5 h-5 flex items-center justify-center">
             <i class="ri-phone-line"></i>
           </div>
         </button>
-        <button class="history-copy-btn p-2 text-gray-500 hover:text-primary whitespace-nowrap !rounded-button">
+        <button class="history-copy-btn p-2 text-gray-500 hover:text-primary whitespace-nowrap rounded-button">
           <div class="w-5 h-5 flex items-center justify-center">
             <i class="ri-file-copy-line"></i>
           </div>
@@ -470,6 +526,32 @@ function preventZoomAndScroll() {
 }
 
 // =========================================================================
+// NAVIGATION
+// =========================================================================
+
+function showSection(sectionId) {
+  if (sectionId === 'generator') {
+    DOM_ELEMENTS.generatorSection.classList.remove('hidden');
+    DOM_ELEMENTS.settingsSection.classList.add('hidden');
+
+    DOM_ELEMENTS.navGenerator.classList.add('bg-primary/10', 'text-primary');
+    DOM_ELEMENTS.navGenerator.classList.remove('text-gray-600', 'hover:bg-gray-100');
+
+    DOM_ELEMENTS.navSettings.classList.remove('bg-primary/10', 'text-primary');
+    DOM_ELEMENTS.navSettings.classList.add('text-gray-600', 'hover:bg-gray-100');
+  } else {
+    DOM_ELEMENTS.generatorSection.classList.add('hidden');
+    DOM_ELEMENTS.settingsSection.classList.remove('hidden');
+
+    DOM_ELEMENTS.navSettings.classList.add('bg-primary/10', 'text-primary');
+    DOM_ELEMENTS.navSettings.classList.remove('text-gray-600', 'hover:bg-gray-100');
+
+    DOM_ELEMENTS.navGenerator.classList.remove('bg-primary/10', 'text-primary');
+    DOM_ELEMENTS.navGenerator.classList.add('text-gray-600', 'hover:bg-gray-100');
+  }
+}
+
+// =========================================================================
 // INITIALISATION DE L'APPLICATION
 // =========================================================================
 
@@ -477,6 +559,30 @@ function preventZoomAndScroll() {
  * Initialise l'application
  */
 function initApp() {
+  // Charger les paramètres
+  loadSettings();
+
+  // Initialiser la navigation
+  DOM_ELEMENTS.navGenerator.addEventListener('click', (e) => {
+    e.preventDefault();
+    showSection('generator');
+  });
+
+  DOM_ELEMENTS.navSettings.addEventListener('click', (e) => {
+    e.preventDefault();
+    showSection('settings');
+  });
+
+  const navHistory = document.getElementById('navHistory');
+  if (navHistory) {
+    navHistory.addEventListener('click', (e) => {
+      showSection('generator');
+    });
+  }
+
+  // Initialiser la sauvegarde des paramètres
+  DOM_ELEMENTS.saveSettingsBtn.addEventListener('click', saveSettings);
+
   // Initialiser la validation du téléphone
   initPhoneValidation();
 
