@@ -4,43 +4,163 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#4f46e5">
-  <title>Mvola Code Generator</title>
+  <title>Transfert Mvola — Générateur de Code</title>
   <link rel="manifest" href="/manifest.json">
   <link href="/tailwind.min.css" rel="stylesheet">
-  <link href="style.css" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
+  
+  <style>
+    :where([class^="ri-"])::before { content: "\f3c2"; }
+    
+    body {
+      background-color: #f9fafb;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+    
+    aside {
+      z-index: 40;
+    }
+    
+    main {
+      min-height: 100vh;
+    }
+    
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+    
+    .bg-primary {
+      background-color: rgb(59 130 246);
+    }
+
+    .text-primary {
+      color: rgb(59 130 246);
+    }
+
+    .focus\:ring-primary:focus {
+      --tw-ring-color: rgb(59 130 246);
+    }
+
+    .focus\:border-primary:focus {
+      border-color: rgb(59 130 246);
+    }
+
+    .hover\:text-primary:hover {
+      color: rgb(59 130 246);
+    }
+
+    .nav-link.active {
+      background-color: rgb(239 246 255);
+      color: rgb(59 130 246);
+    }
+
+    .nav-link.active .w-5 {
+      color: rgb(59 130 246);
+    }
+  </style>
 </head>
 <body class="min-h-screen flex relative">
-  <!-- Sidebar -->
-  <aside class="fixed top-0 left-0 bottom-0 w-64 bg-white shadow-xl transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-40">
-    <div class="flex flex-col h-full">
-      <div class="p-6 border-b flex items-center justify-between">
-        <h1 class="font-['Pacifico'] text-2xl text-primary">Mvola</h1>
-        <button id="closeSidebar" class="lg:hidden text-gray-500 hover:text-gray-700">
-          <i class="ri-close-line text-2xl"></i>
-        </button>
-      </div>
-      <nav class="flex-1 p-4 space-y-2">
-        <a href="#" class="flex items-center space-x-3 p-3 rounded-lg bg-primary/10 text-primary">
-          <i class="ri-home-4-line"></i>
-          <span>Générateur</span>
-        </a>
-        <a href="#historyList" class="flex items-center space-x-3 p-3 rounded-lg text-gray-600 hover:bg-gray-100">
-          <i class="ri-history-line"></i>
-          <span>Historique</span>
-        </a>
-      </nav>
-      <div class="p-4 border-t text-center text-sm text-gray-500">
-        Mvola Code Generator v1.0
-      </div>
-    </div>
-  </aside>
-
   <!-- Overlay pour la sidebar mobile -->
   <div id="overlay" class="fixed inset-0 bg-black opacity-50 z-30 hidden lg:hidden"></div>
+
+  <!-- Sidebar -->
+  <aside class="fixed inset-y-0 left-0 w-64 bg-white border-r border-gray-200 shadow-sm transform -translate-x-full lg:translate-x-0 transition-transform duration-200 ease-in-out flex flex-col">
+    <div class="flex items-center justify-between p-4 border-b border-gray-100">
+      <a href="/" class="font-['Pacifico'] text-2xl text-primary">Mvola</a>
+      <button id="closeSidebar" type="button" class="text-gray-500 hover:text-gray-700 lg:hidden" aria-label="Fermer le menu">
+        <div class="w-5 h-5 flex items-center justify-center">
+          <i class="ri-close-line"></i>
+        </div>
+      </button>
+    </div>
+
+    <nav class="flex-1 overflow-y-auto p-3 space-y-1">
+      <p class="px-3 py-2 text-xs font-semibold uppercase tracking-wide text-gray-400">Fonctionnalités</p>
+
+      <a href="/" data-page="transfert" class="nav-link active flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-primary transition">
+        <div class="w-5 h-5 flex items-center justify-center text-gray-400">
+          <i class="ri-exchange-line"></i>
+        </div>
+        Transfert
+      </a>
+
+      <a href="/depot.html" data-page="depot" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-primary transition">
+        <div class="w-5 h-5 flex items-center justify-center text-gray-400">
+          <i class="ri-add-circle-line"></i>
+        </div>
+        Dépôt
+      </a>
+
+      <a href="/retrait.html" data-page="retrait" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-primary transition">
+        <div class="w-5 h-5 flex items-center justify-center text-gray-400">
+          <i class="ri-hand-coin-line"></i>
+        </div>
+        Retrait
+      </a>
+
+      <a href="/epargne.html" data-page="epargne" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-primary transition">
+        <div class="w-5 h-5 flex items-center justify-center text-gray-400">
+          <i class="ri-safe-2-line"></i>
+        </div>
+        Épargne
+      </a>
+
+      <a href="/solde.html" data-page="solde" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-primary transition">
+        <div class="w-5 h-5 flex items-center justify-center text-gray-400">
+          <i class="ri-wallet-3-line"></i>
+        </div>
+        Solde
+      </a>
+
+      <a href="/transactions.html" data-page="transactions" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-primary transition">
+        <div class="w-5 h-5 flex items-center justify-center text-gray-400">
+          <i class="ri-file-list-3-line"></i>
+        </div>
+        Transactions
+      </a>
+
+      <div class="my-3 border-t border-gray-100"></div>
+
+      <p class="px-3 py-2 text-xs font-semibold uppercase tracking-wide text-gray-400">Type de transfert</p>
+
+      <a href="#entreprise" data-type="entreprise" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-primary transition">
+        <div class="w-5 h-5 flex items-center justify-center text-gray-400">
+          <i class="ri-building-line"></i>
+        </div>
+        Entreprise
+      </a>
+
+      <a href="#personnes" data-type="personnes" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-primary transition">
+        <div class="w-5 h-5 flex items-center justify-center text-gray-400">
+          <i class="ri-user-line"></i>
+        </div>
+        Personnes
+      </a>
+
+      <div class="my-3 border-t border-gray-100"></div>
+
+      <a href="#historique" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-primary transition">
+        <div class="w-5 h-5 flex items-center justify-center text-gray-400">
+          <i class="ri-history-line"></i>
+        </div>
+        Historique
+      </a>
+    </nav>
+
+    <div class="p-4 border-t border-gray-100 text-xs text-gray-400">
+      Transfert Mvola — USSD
+    </div>
+  </aside>
 
   <!-- Contenu principal -->
   <main class="flex-1 lg:ml-64">
@@ -48,7 +168,7 @@
     <div class="flex items-center justify-between p-4 lg:hidden bg-white shadow-sm">
       <button id="openSidebar" class="text-gray-500 hover:text-gray-700">
         <div class="w-5 h-5 flex items-center justify-center">
-          <i class="ri-menu-line text-xl"></i>
+          <i class="ri-menu-line"></i>
         </div>
       </button>
       <h1 class="font-['Pacifico'] text-xl text-primary">Mvola</h1>
@@ -56,16 +176,16 @@
     </div>
     
     <!-- Formulaire principal -->
-    <div class="max-w-md mx-auto p-4 lg:p-6 bg-white shadow-lg rounded-lg my-4 lg:my-8">
+    <div id="generer" class="max-w-md mx-auto p-4 lg:p-6 bg-white shadow-lg rounded-lg my-4 lg:my-8">
       <header class="mb-6 text-center">
-        <h1 class="text-2xl font-bold text-gray-800">Générer un Code</h1>
-        <p class="text-gray-600 text-sm mt-1">Créez une chaîne formatée basée sur vos entrées</p>
+        <h1 class="text-2xl font-bold text-gray-800">Transfert Mvola</h1>
+        <p class="text-gray-600 text-sm mt-1">Générez un code USSD pour transférer de l'argent</p>
       </header>
       
       <form id="codeForm" class="space-y-6">
         <!-- Type de Mvola -->
         <div class="space-y-2">
-          <label for="mvolaType" class="block text-sm font-medium text-gray-700">Type de Mvola</label>
+          <label for="mvolaType" class="block text-sm font-medium text-gray-700">Type de transfert</label>
           <div class="relative">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <div class="w-5 h-5 flex items-center justify-center text-gray-400">
@@ -85,7 +205,7 @@
         </div>
         
         <!-- Numéro de téléphone -->
-        <div class="space-y-2">
+        <div id="phoneField" class="space-y-2">
           <label for="phone" class="block text-sm font-medium text-gray-700">Numéro de téléphone</label>
           <div class="relative">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -145,7 +265,7 @@
       </form>
       
       <!-- Historique -->
-      <div class="mt-8 border-t pt-6">
+      <div id="historique" class="mt-8 border-t pt-6">
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-lg font-medium text-gray-800">Historique</h2>
           <div class="flex items-center gap-4">
@@ -163,6 +283,779 @@
     </div>
   </main>
 
-  <script src="js/app.js" defer></script>
+  <!-- Scripts JavaScript séparés par fonctionnalité -->
+  <script>
+    // =========================================================================
+    // VARIABLES GLOBALES
+    // =========================================================================
+    const APP_CONFIG = {
+      maxHistoryEntries: 10,
+      localStorageKey: 'codeHistory',
+      phoneMaxLength: 10
+    };
+
+    // Éléments DOM
+    const DOM_ELEMENTS = {
+      // Formulaire
+      phoneInput: document.getElementById('phone'),
+      phoneField: document.getElementById('phoneField'),
+      amountInput: document.getElementById('amount'),
+      resultInput: document.getElementById('result'),
+      mvolaTypeSelect: document.getElementById('mvolaType'),
+      generateBtn: document.getElementById('generateBtn'),
+      clearBtn: document.getElementById('clearBtn'),
+      callBtn: document.getElementById('callBtn'),
+      copyBtn: document.getElementById('copyBtn'),
+      
+      // Messages d'erreur
+      phoneError: document.getElementById('phoneError'),
+      amountError: document.getElementById('amountError'),
+      copyMessage: document.getElementById('copyMessage'),
+      
+      // Historique
+      historyList: document.getElementById('historyList'),
+      emptyHistory: document.getElementById('emptyHistory'),
+      clearHistoryBtn: document.getElementById('clearHistoryBtn'),
+      historyContainer: document.getElementById('historyContainer'),
+      totalAmount: document.getElementById('totalAmount'),
+      
+      // Sidebar mobile
+      openSidebarBtn: document.getElementById('openSidebar'),
+      closeSidebarBtn: document.getElementById('closeSidebar'),
+      overlay: document.getElementById('overlay'),
+      sidebar: document.querySelector('aside')
+    };
+
+    // =========================================================================
+    // FONCTIONS UTILITAIRES
+    // =========================================================================
+    
+    /**
+     * Formate un nombre avec des séparateurs de milliers
+     * @param {number|string} x - Le nombre à formater
+     * @returns {string} Le nombre formaté
+     */
+    function formatNumber(x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    }
+
+    /**
+     * Formate un champ de saisie avec des séparateurs de milliers
+     * @param {HTMLInputElement} input - L'élément input à formater
+     */
+    function formatNumberOnly(input) {
+      // Supprimer tout ce qui n'est pas un chiffre
+      let raw = input.value.replace(/\D/g, "");
+      
+      // Ajouter des séparateurs de milliers
+      let formatted = raw.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+      
+      // Mettre la valeur formatée dans l'input
+      input.value = formatted;
+    }
+
+    /**
+     * Met à jour l'état actif des liens du menu (types de transfert)
+     * @param {string} mvolaType
+     */
+    function updateActiveNav(mvolaType) {
+      document.querySelectorAll("nav a.nav-link[data-type]").forEach((link) => {
+        link.classList.toggle("active", link.getAttribute("data-type") === mvolaType);
+      });
+    }
+
+    /**
+     * Synchronise le menu avec le type sélectionné
+     */
+    function updateFormForType() {
+      updateActiveNav(DOM_ELEMENTS.mvolaTypeSelect.value);
+    }
+
+    /**
+     * Génère un code Mvola transfert
+     * @param {string} mvolaType - 'entreprise' | 'personnes'
+     * @param {string} phone - Le numéro de téléphone
+     * @param {string} amount - Le montant
+     * @returns {string} Le code Mvola généré
+     */
+    function generateMvolaCode(mvolaType, phone, amount) {
+      if (mvolaType === "entreprise") {
+        return `#111*1*3*2*${phone}*${amount}*2*1#`;
+      }
+      return `#111*1*2*${phone}*${amount}*2*1#`;
+    }
+
+    /**
+     * Extrait le montant d'un code Mvola
+     * @param {string} code - Le code Mvola
+     * @returns {number} Le montant extrait
+     */
+    function extractAmountFromCode(code) {
+      const match = code.match(/\*(\d+)\*2\*1#$/);
+      return match ? parseInt(match[1], 10) : 0;
+    }
+
+    /**
+     * Extrait le numéro de téléphone d'un code Mvola
+     * @param {string} code - Le code Mvola
+     * @returns {string} Le numéro de téléphone extrait
+     */
+    function extractPhoneFromCode(code) {
+      const match = code.match(/\*(\d+)\*\d+\*2\*1#$/);
+      return match ? match[1] : "";
+    }
+
+    // =========================================================================
+    // GESTION DE L'HISTORIQUE
+    // =========================================================================
+    
+    /**
+     * Charge l'historique depuis le localStorage
+     * @returns {Array} L'historique des codes
+     */
+    function loadHistory() {
+      return JSON.parse(localStorage.getItem(APP_CONFIG.localStorageKey) || "[]");
+    }
+
+    /**
+     * Sauvegarde l'historique dans le localStorage
+     * @param {Array} history - L'historique à sauvegarder
+     */
+    function saveHistory(history) {
+      localStorage.setItem(APP_CONFIG.localStorageKey, JSON.stringify(history));
+    }
+
+    /**
+     * Ajoute un code à l'historique
+     * @param {string} code - Le code à ajouter
+     */
+    function addToHistory(code) {
+      const history = loadHistory();
+      
+      // Ajouter la nouvelle entrée avec horodatage
+      const newEntry = {
+        code: code,
+        timestamp: new Date().toISOString(),
+      };
+      
+      // Ajouter au début du tableau
+      history.unshift(newEntry);
+      
+      // Limiter le nombre d'entrées
+      if (history.length > APP_CONFIG.maxHistoryEntries) {
+        history.pop();
+      }
+      
+      // Sauvegarder dans le localStorage
+      saveHistory(history);
+      
+      // Mettre à jour l'interface
+      updateHistoryUI();
+    }
+
+    /**
+     * Met à jour l'affichage de l'historique
+     */
+    function updateHistoryUI() {
+      const history = loadHistory();
+      
+      // Vider la liste actuelle
+      DOM_ELEMENTS.historyList.innerHTML = "";
+      
+      let totalAmount = 0;
+      
+      // Calculer le montant total à partir de tous les éléments d'historique
+      history.forEach((item) => {
+        const amount = extractAmountFromCode(item.code);
+        totalAmount += amount;
+      });
+      
+      // Mettre à jour l'affichage du montant total
+      DOM_ELEMENTS.totalAmount.textContent = totalAmount.toLocaleString("fr-FR") + " Ar";
+      
+      if (history.length === 0) {
+        DOM_ELEMENTS.emptyHistory.classList.remove("hidden");
+        DOM_ELEMENTS.historyContainer.classList.add("hidden");
+      } else {
+        DOM_ELEMENTS.emptyHistory.classList.add("hidden");
+        DOM_ELEMENTS.historyContainer.classList.remove("hidden");
+        
+        // Ajouter chaque élément d'historique
+        history.forEach((item, index) => {
+          const amount = extractAmountFromCode(item.code);
+          const li = createHistoryListItem(item, index, amount);
+          DOM_ELEMENTS.historyList.appendChild(li);
+        });
+      }
+    }
+
+    /**
+     * Crée un élément de liste pour l'historique
+     * @param {Object} item - L'élément d'historique
+     * @param {number} index - L'index de l'élément
+     * @param {number} amount - Le montant de la transaction
+     * @returns {HTMLLIElement} L'élément de liste créé
+     */
+    function createHistoryListItem(item, index, amount) {
+      const li = document.createElement("li");
+      li.className = index % 2 === 0 ? "bg-white" : "bg-gray-50";
+      
+      const date = new Date(item.timestamp);
+      const formattedDate = date.toLocaleString("fr-FR", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+      
+      li.innerHTML = `
+        <div class="flex justify-between items-center p-3">
+          <div class="flex-1 pr-4">
+            <p class="history-code text-sm font-medium text-gray-800 break-all">
+              ${item.code}
+              ${item.paid ? '<span class="payment-status text-xs font-medium text-green-500 ml-2">Payé</span>' : ""}
+            </p>
+            <p class="text-sm text-gray-600 mt-1">Montant: ${parseInt(amount).toLocaleString("fr-FR")} Ar</p>
+            <p class="text-xs text-gray-500">${formattedDate}</p>
+            <p class="history-copy-msg text-xs text-green-500 hidden">Copié!</p>
+          </div>
+          <div class="flex gap-2">
+            <button class="history-call-btn p-2 text-gray-500 hover:text-primary whitespace-nowrap !rounded-button">
+              <div class="w-5 h-5 flex items-center justify-center">
+                <i class="ri-phone-line"></i>
+              </div>
+            </button>
+            <button class="history-copy-btn p-2 text-gray-500 hover:text-primary whitespace-nowrap !rounded-button">
+              <div class="w-5 h-5 flex items-center justify-center">
+                <i class="ri-file-copy-line"></i>
+              </div>
+            </button>
+          </div>
+        </div>
+      `;
+      
+      return li;
+    }
+
+    /**
+     * Efface l'historique
+     */
+    function clearHistory() {
+      localStorage.removeItem(APP_CONFIG.localStorageKey);
+      updateHistoryUI();
+    }
+
+    // =========================================================================
+    // VALIDATION DES DONNÉES
+    // =========================================================================
+    
+    /**
+     * Valide le numéro de téléphone
+     * @param {string} phone - Le numéro de téléphone à valider
+     * @returns {boolean} True si le numéro est valide
+     */
+    function validatePhone(phone) {
+      return phone.length >= 8;
+    }
+
+    /**
+     * Valide le montant
+     * @param {string} amount - Le montant à valider
+     * @returns {boolean} True si le montant est valide
+     */
+    function validateAmount(amount) {
+      return amount.replace(/\D/g, "").length > 0;
+    }
+
+    /**
+     * Valide le formulaire
+     * @returns {boolean} True si le formulaire est valide
+     */
+    function validateForm() {
+      const phone = DOM_ELEMENTS.phoneInput.value.trim();
+      const amountWithCurrency = DOM_ELEMENTS.amountInput.value.trim();
+      const amount = amountWithCurrency.replace(/\D/g, "");
+      
+      let isValid = true;
+      
+      if (!validatePhone(phone)) {
+        DOM_ELEMENTS.phoneError.classList.remove("hidden");
+        isValid = false;
+      } else {
+        DOM_ELEMENTS.phoneError.classList.add("hidden");
+      }
+      
+      if (!validateAmount(amount)) {
+        DOM_ELEMENTS.amountError.classList.remove("hidden");
+        isValid = false;
+      } else {
+        DOM_ELEMENTS.amountError.classList.add("hidden");
+      }
+      
+      return isValid;
+    }
+
+    // =========================================================================
+    // GESTION DU CLIPBOARD
+    // =========================================================================
+    
+    /**
+     * Copie du texte dans le presse-papiers
+     * @param {string} text - Le texte à copier
+     */
+    function copyToClipboard(text) {
+      // Créer un textarea temporaire pour copier le texte
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+    }
+
+    // =========================================================================
+    // GESTION DES DIALOGUES
+    // =========================================================================
+    
+    /**
+     * Affiche un dialogue d'avertissement pour les doublons
+     * @param {boolean} isDuplicate - Si c'est un doublon exact
+     * @param {boolean} duplicatePhone - Si le numéro a déjà été utilisé
+     * @param {Function} onContinue - Fonction à exécuter si l'utilisateur continue
+     */
+    function showDuplicateWarning(isDuplicate, duplicatePhone, onContinue) {
+      const warningDialog = document.createElement("div");
+      warningDialog.className = "fixed inset-0 flex items-center justify-center z-50";
+      
+      let dialogContent;
+      
+      if (duplicatePhone && !isDuplicate) {
+        dialogContent = `
+          <div class="fixed inset-0 bg-black/50"></div>
+          <div class="bg-white rounded-lg p-6 max-w-sm mx-4 relative z-10">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Avertissement</h3>
+            <p class="text-gray-600 mb-6">Ce numéro de téléphone a déjà été utilisé. Êtes-vous sûr de vouloir continuer?</p>
+            <div class="flex gap-3">
+              <button class="flex-1 bg-gray-200 text-gray-700 px-4 py-2 rounded-button" id="cancelBtn">Annuler</button>
+              <button class="flex-1 bg-primary text-white px-4 py-2 rounded-button" id="continueBtn">Continuer</button>
+            </div>
+          </div>
+        `;
+      } else {
+        dialogContent = `
+          <div class="fixed inset-0 bg-black/50"></div>
+          <div class="bg-white rounded-lg p-6 max-w-sm mx-4 relative z-10">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Avertissement</h3>
+            <p class="text-gray-600 mb-6">Cette combinaison de numéro de téléphone et de montant a déjà été utilisée.</p>
+            <div class="flex gap-3">
+              <button class="w-full bg-primary text-white px-4 py-2 rounded-button" id="okBtn">OK</button>
+            </div>
+          </div>
+        `;
+      }
+      
+      warningDialog.innerHTML = dialogContent;
+      document.body.appendChild(warningDialog);
+      
+      // Gérer les boutons du dialogue
+      if (duplicatePhone && !isDuplicate) {
+        document.getElementById('cancelBtn').addEventListener('click', () => {
+          warningDialog.remove();
+        });
+        
+        document.getElementById('continueBtn').addEventListener('click', () => {
+          onContinue();
+          warningDialog.remove();
+        });
+      } else {
+        document.getElementById('okBtn').addEventListener('click', () => {
+          warningDialog.remove();
+        });
+      }
+    }
+
+    // =========================================================================
+    // GESTION DE LA SIDEBAR MOBILE
+    // =========================================================================
+    
+    /**
+     * Ouvre la sidebar mobile
+     */
+    function openSidebar() {
+      DOM_ELEMENTS.sidebar.classList.remove("-translate-x-full");
+      DOM_ELEMENTS.overlay.classList.remove("hidden");
+      document.body.style.overflow = "hidden";
+    }
+
+    /**
+     * Ferme la sidebar mobile
+     */
+    function closeSidebar() {
+      DOM_ELEMENTS.sidebar.classList.add("-translate-x-full");
+      DOM_ELEMENTS.overlay.classList.add("hidden");
+      document.body.style.overflow = "";
+    }
+
+    // =========================================================================
+    // GESTION DU ZOOM ET DU DÉFILEMENT
+    // =========================================================================
+    
+    /**
+     * Empêche le zoom et le défilement non désirés
+     */
+    function preventZoomAndScroll() {
+      // Bloquer ctrl/cmd + plus/minus/0 et roulette avec ctrl
+      window.addEventListener('keydown', function(e) {
+        const isCtrl = e.ctrlKey || e.metaKey;
+        if (isCtrl) {
+          if (e.key === '+' || e.key === '-' || e.key === '=' || e.key === '0') {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+          }
+        }
+      }, { passive: false });
+
+      // Bloquer la roulette quand ctrl/cmd est pressé
+      window.addEventListener('wheel', function(e) {
+        if (e.ctrlKey || e.metaKey) {
+          e.preventDefault();
+          e.stopPropagation();
+          return false;
+        }
+      }, { passive: false });
+
+      // Empêcher le pinch-zoom sur mobile
+      window.addEventListener('gesturestart', function(e) {
+        e.preventDefault();
+      }, { passive: false });
+
+      // Empêcher le double tap zoom
+      (function() {
+        let lastTouch = 0;
+        window.addEventListener('touchend', function(e) {
+          const now = Date.now();
+          if (now - lastTouch <= 300) {
+            e.preventDefault();
+          }
+          lastTouch = now;
+        }, { passive: false });
+      })();
+
+      // Empêcher pinch (deux doigts)
+      window.addEventListener('touchmove', function(e) {
+        if (e.touches && e.touches.length > 1) {
+          e.preventDefault();
+        }
+      }, { passive: false });
+
+      // Empêcher scroll horizontal par clavier
+      window.addEventListener('keydown', function(e) {
+        const blockedKeys = ['ArrowLeft', 'ArrowRight'];
+        if (blockedKeys.includes(e.key)) {
+          e.preventDefault();
+          e.stopPropagation();
+          return false;
+        }
+      }, { passive: false });
+
+      // S'assurer que body ne dépasse pas largeur viewport
+      function clampBodyWidth() {
+        document.documentElement.style.overflowX = 'hidden';
+        document.body.style.overflowX = 'hidden';
+        document.body.style.maxWidth = '100vw';
+      }
+      
+      clampBodyWidth();
+      window.addEventListener('resize', clampBodyWidth);
+    }
+
+    // =========================================================================
+    // INITIALISATION DE L'APPLICATION
+    // =========================================================================
+    
+    /**
+     * Initialise l'application
+     */
+    function initApp() {
+      // Initialiser la validation du téléphone
+      initPhoneValidation();
+      
+      // Initialiser le formatage du montant
+      initAmountFormatting();
+      
+      // Initialiser la génération de code
+      initCodeGeneration();
+      
+      // Initialiser la gestion du clipboard
+      initClipboard();
+      
+      // Initialiser la sidebar mobile
+      initMobileSidebar();
+      
+      // Initialiser la gestion du zoom et défilement
+      preventZoomAndScroll();
+      
+      // Charger l'historique
+      updateHistoryUI();
+      
+      // Enregistrer le Service Worker
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => console.log('Service Worker enregistré', reg))
+          .catch(err => console.error('Erreur Service Worker', err));
+      }
+    }
+
+    /**
+     * Initialise la validation du téléphone
+     */
+    function initPhoneValidation() {
+      DOM_ELEMENTS.phoneInput.addEventListener("input", function (e) {
+        // Supprimer les caractères non numériques
+        let value = e.target.value.replace(/\D/g, "");
+        
+        // Limiter à 10 chiffres
+        if (value.length > APP_CONFIG.phoneMaxLength) {
+          value = value.substring(0, APP_CONFIG.phoneMaxLength);
+        }
+        
+        e.target.value = value;
+        
+        // Valider le numéro de téléphone
+        if (value.length < 8) {
+          DOM_ELEMENTS.phoneError.classList.remove("hidden");
+        } else {
+          DOM_ELEMENTS.phoneError.classList.add("hidden");
+        }
+      });
+    }
+
+    /**
+     * Initialise le formatage du montant
+     */
+    function initAmountFormatting() {
+      DOM_ELEMENTS.amountInput.addEventListener("input", function (e) {
+        formatNumberOnly(e.target);
+        
+        // Valider le montant
+        let value = e.target.value.replace(/\D/g, "");
+        if (!value) {
+          DOM_ELEMENTS.amountError.classList.remove("hidden");
+        } else {
+          DOM_ELEMENTS.amountError.classList.add("hidden");
+        }
+      });
+    }
+
+    /**
+     * Initialise la génération de code
+     */
+    function initCodeGeneration() {
+      DOM_ELEMENTS.mvolaTypeSelect.addEventListener("change", updateFormForType);
+      updateFormForType();
+
+      DOM_ELEMENTS.generateBtn.addEventListener("click", function () {
+        const phone = DOM_ELEMENTS.phoneInput.value.trim();
+        const amountWithCurrency = DOM_ELEMENTS.amountInput.value.trim();
+        const mvolaType = DOM_ELEMENTS.mvolaTypeSelect.value;
+        const amount = amountWithCurrency.replace(/\D/g, "");
+        
+        if (!validateForm()) {
+          return;
+        }
+        
+        const generatedCode = generateMvolaCode(mvolaType, phone, amount);
+        
+        const history = loadHistory();
+        const isDuplicate = history.some((item) => item.code === generatedCode);
+        const duplicatePhone = history.some((item) => {
+          const itemPhone = extractPhoneFromCode(item.code);
+          return itemPhone && itemPhone === phone;
+        });
+        
+        if (isDuplicate || duplicatePhone) {
+          showDuplicateWarning(isDuplicate, duplicatePhone, () => {
+            DOM_ELEMENTS.resultInput.value = generatedCode;
+            addToHistory(generatedCode);
+            DOM_ELEMENTS.copyBtn.classList.remove("hidden");
+          });
+        } else {
+          DOM_ELEMENTS.resultInput.value = generatedCode;
+          addToHistory(generatedCode);
+          DOM_ELEMENTS.copyBtn.classList.remove("hidden");
+        }
+      });
+      
+      DOM_ELEMENTS.callBtn.addEventListener("click", function () {
+        const phone = DOM_ELEMENTS.phoneInput.value.trim();
+        if (phone) {
+          window.location.href = `tel:${phone}`;
+        }
+      });
+      
+      const clearPhoneBtn = document.createElement("button");
+      clearPhoneBtn.type = "button";
+      clearPhoneBtn.className = "absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600";
+      clearPhoneBtn.innerHTML = '<div class="w-5 h-5 flex items-center justify-center"><i class="ri-close-line"></i></div>';
+      DOM_ELEMENTS.phoneInput.parentElement.appendChild(clearPhoneBtn);
+      
+      const clearAmountBtn = document.createElement("button");
+      clearAmountBtn.type = "button";
+      clearAmountBtn.className = "absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600";
+      clearAmountBtn.innerHTML = '<div class="w-5 h-5 flex items-center justify-center"><i class="ri-close-line"></i></div>';
+      DOM_ELEMENTS.amountInput.parentElement.appendChild(clearAmountBtn);
+      
+      clearPhoneBtn.addEventListener("click", function () {
+        DOM_ELEMENTS.phoneInput.value = "";
+        DOM_ELEMENTS.phoneError.classList.add("hidden");
+        DOM_ELEMENTS.resultInput.value = "";
+        DOM_ELEMENTS.copyMessage.classList.add("hidden");
+      });
+      
+      clearAmountBtn.addEventListener("click", function () {
+        DOM_ELEMENTS.amountInput.value = "";
+        DOM_ELEMENTS.amountError.classList.add("hidden");
+        DOM_ELEMENTS.resultInput.value = "";
+        DOM_ELEMENTS.copyMessage.classList.add("hidden");
+      });
+      
+      DOM_ELEMENTS.clearBtn.addEventListener("click", function () {
+        DOM_ELEMENTS.phoneInput.value = "";
+        DOM_ELEMENTS.amountInput.value = "";
+        DOM_ELEMENTS.resultInput.value = "";
+        DOM_ELEMENTS.phoneError.classList.add("hidden");
+        DOM_ELEMENTS.amountError.classList.add("hidden");
+        DOM_ELEMENTS.copyMessage.classList.add("hidden");
+      });
+    }
+
+    /**
+     * Initialise la gestion du clipboard
+     */
+    function initClipboard() {
+      // Copie du code principal
+      DOM_ELEMENTS.copyBtn.addEventListener("click", function () {
+        if (DOM_ELEMENTS.resultInput.value) {
+          copyToClipboard(DOM_ELEMENTS.resultInput.value);
+          
+          // Afficher le message de copie
+          DOM_ELEMENTS.copyMessage.classList.remove("hidden");
+          
+          // Masquer le message après 2 secondes
+          setTimeout(() => {
+            DOM_ELEMENTS.copyMessage.classList.add("hidden");
+          }, 2000);
+        }
+      });
+      
+      // Gestion des boutons de copie et d'appel de l'historique
+      document.addEventListener("click", function (e) {
+        if (e.target.closest(".history-copy-btn")) {
+          const codeElement = e.target.closest("li").querySelector(".history-code");
+          const code = codeElement.textContent;
+          
+          copyToClipboard(code);
+          
+          // Afficher le message de copie temporaire
+          const copyMsg = e.target.closest("li").querySelector(".history-copy-msg");
+          copyMsg.classList.remove("hidden");
+          setTimeout(() => {
+            copyMsg.classList.add("hidden");
+          }, 2000);
+        }
+        
+        if (e.target.closest(".history-call-btn")) {
+          const codeElement = e.target.closest("li").querySelector(".history-code");
+          const code = codeElement.textContent;
+          const historyItem = e.target.closest("li");
+          const statusElement = historyItem.querySelector(".payment-status");
+          
+          if (!statusElement) {
+            const status = document.createElement("span");
+            status.className = "payment-status text-xs font-medium text-green-500 ml-2";
+            status.textContent = "Payé";
+            historyItem.querySelector(".history-code").appendChild(status);
+            
+            const history = loadHistory();
+            const itemIndex = Array.from(DOM_ELEMENTS.historyList.children).indexOf(historyItem);
+            if (history[itemIndex]) {
+              history[itemIndex].paid = true;
+              saveHistory(history);
+            }
+          }
+          
+          window.location.href = `tel:${code}`;
+        }
+      });
+    }
+
+    /**
+     * Initialise la sidebar mobile
+     */
+    function initMobileSidebar() {
+      if (!DOM_ELEMENTS.sidebar || !DOM_ELEMENTS.openSidebarBtn || !DOM_ELEMENTS.closeSidebarBtn) {
+        return;
+      }
+
+      DOM_ELEMENTS.openSidebarBtn.addEventListener("click", openSidebar);
+      DOM_ELEMENTS.closeSidebarBtn.addEventListener("click", closeSidebar);
+      DOM_ELEMENTS.overlay.addEventListener("click", closeSidebar);
+      
+      const navLinks = document.querySelectorAll("nav a.nav-link");
+      navLinks.forEach((link) => {
+        link.addEventListener("click", (e) => {
+          const type = link.getAttribute("data-type");
+          const href = link.getAttribute("href");
+
+          if (type) {
+            e.preventDefault();
+            DOM_ELEMENTS.mvolaTypeSelect.value = type;
+            updateFormForType();
+            document.getElementById("generer")?.scrollIntoView({ behavior: "smooth", block: "start" });
+          } else if (href === "#historique") {
+            e.preventDefault();
+            document.getElementById("historique")?.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+
+          if (window.innerWidth < 1024 && (type || href === "#historique" || href?.startsWith("#"))) {
+            closeSidebar();
+          }
+        });
+      });
+      
+      window.addEventListener("resize", () => {
+        if (window.innerWidth >= 1024) {
+          closeSidebar();
+        }
+      });
+
+      updateActiveNav(DOM_ELEMENTS.mvolaTypeSelect.value);
+    }
+
+    /**
+     * Initialise la gestion de l'historique
+     */
+    function initHistoryManagement() {
+      DOM_ELEMENTS.clearHistoryBtn.addEventListener("click", clearHistory);
+    }
+
+    // =========================================================================
+    // EXÉCUTION AU CHARGEMENT DE LA PAGE
+    // =========================================================================
+    document.addEventListener("DOMContentLoaded", function () {
+  
+      const history = loadHistory();
+      history.forEach((item, index) => {
+        const amount = extractAmountFromCode(item.code);
+        const li = createHistoryListItem(item, index, amount);
+       DOM_ELEMENTS.historyList.appendChild(li);
+      });
+       initApp();
+      initHistoryManagement();
+    });
+
+  </script>
 </body>
 </html>

@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#4f46e5">
+  <title>Dépôt Mvola — Générateur de Code</title>
+  <link rel="manifest" href="/manifest.json">
+  <link href="/tailwind.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
+  
+  <style>
+    :where([class^="ri-"])::before { content: "\f3c2"; }
+    body { background-color: #f9fafb; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+    aside { z-index: 40; }
+    main { min-height: 100vh; }
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    input[type=number] { -moz-appearance: textfield; }
+    .bg-primary { background-color: rgb(59 130 246); }
+    .text-primary { color: rgb(59 130 246); }
+    .focus\:ring-primary:focus { --tw-ring-color: rgb(59 130 246); }
+    .focus\:border-primary:focus { border-color: rgb(59 130 246); }
+    .hover\:text-primary:hover { color: rgb(59 130 246); }
+    .nav-link.active { background-color: rgb(239 246 255); color: rgb(59 130 246); }
+    .nav-link.active .w-5 { color: rgb(59 130 246); }
+  </style>
+</head>
+<body class="min-h-screen flex relative">
+  <div id="overlay" class="fixed inset-0 bg-black opacity-50 z-30 hidden lg:hidden"></div>
+
+  <aside class="fixed inset-y-0 left-0 w-64 bg-white border-r border-gray-200 shadow-sm transform -translate-x-full lg:translate-x-0 transition-transform duration-200 ease-in-out flex flex-col">
+    <div class="flex items-center justify-between p-4 border-b border-gray-100">
+      <a href="/" class="font-['Pacifico'] text-2xl text-primary">Mvola</a>
+      <button id="closeSidebar" type="button" class="text-gray-500 hover:text-gray-700 lg:hidden" aria-label="Fermer le menu">
+        <div class="w-5 h-5 flex items-center justify-center"><i class="ri-close-line"></i></div>
+      </button>
+    </div>
+
+    <nav class="flex-1 overflow-y-auto p-3 space-y-1">
+      <p class="px-3 py-2 text-xs font-semibold uppercase tracking-wide text-gray-400">Fonctionnalités</p>
+
+      <a href="/" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-primary transition">
+        <div class="w-5 h-5 flex items-center justify-center text-gray-400"><i class="ri-exchange-line"></i></div>
+        Transfert
+      </a>
+      <a href="/depot.html" class="nav-link active flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-primary transition">
+        <div class="w-5 h-5 flex items-center justify-center text-gray-400"><i class="ri-add-circle-line"></i></div>
+        Dépôt
+      </a>
+      <a href="/retrait.html" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-primary transition">
+        <div class="w-5 h-5 flex items-center justify-center text-gray-400"><i class="ri-hand-coin-line"></i></div>
+        Retrait
+      </a>
+      <a href="/epargne.html" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-primary transition">
+        <div class="w-5 h-5 flex items-center justify-center text-gray-400"><i class="ri-safe-2-line"></i></div>
+        Épargne
+      </a>
+      <a href="/solde.html" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-primary transition">
+        <div class="w-5 h-5 flex items-center justify-center text-gray-400"><i class="ri-wallet-3-line"></i></div>
+        Solde
+      </a>
+      <a href="/transactions.html" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-primary transition">
+        <div class="w-5 h-5 flex items-center justify-center text-gray-400"><i class="ri-file-list-3-line"></i></div>
+        Transactions
+      </a>
+
+      <div class="my-3 border-t border-gray-100"></div>
+      <a href="#historique" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-primary transition">
+        <div class="w-5 h-5 flex items-center justify-center text-gray-400"><i class="ri-history-line"></i></div>
+        Historique
+      </a>
+    </nav>
+
+    <div class="p-4 border-t border-gray-100 text-xs text-gray-400">Dépôt Mvola — USSD</div>
+  </aside>
+
+  <main class="flex-1 lg:ml-64">
+    <div class="flex items-center justify-between p-4 lg:hidden bg-white shadow-sm">
+      <button id="openSidebar" class="text-gray-500 hover:text-gray-700">
+        <div class="w-5 h-5 flex items-center justify-center"><i class="ri-menu-line"></i></div>
+      </button>
+      <h1 class="font-['Pacifico'] text-xl text-primary">Mvola</h1>
+      <div class="w-5"></div>
+    </div>
+    
+    <div id="generer" class="max-w-md mx-auto p-4 lg:p-6 bg-white shadow-lg rounded-lg my-4 lg:my-8">
+      <header class="mb-6 text-center">
+        <h1 class="text-2xl font-bold text-gray-800">Dépôt Mvola</h1>
+        <p class="text-gray-600 text-sm mt-1">Déposer de l'argent sur un compte Mvola</p>
+      </header>
+      
+      <form id="codeForm" class="space-y-6">
+        <div class="space-y-2">
+          <label for="phone" class="block text-sm font-medium text-gray-700">Numéro du client</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <div class="w-5 h-5 flex items-center justify-center text-gray-400"><i class="ri-smartphone-line"></i></div>
+            </div>
+            <input type="tel" id="phone" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-button text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Entrez le numéro du client">
+          </div>
+          <p id="phoneError" class="text-red-500 text-xs hidden">Veuillez entrer un numéro de téléphone valide</p>
+        </div>
+        
+        <div class="space-y-2">
+          <label for="amount" class="block text-sm font-medium text-gray-700">Montant</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <div class="w-5 h-5 flex items-center justify-center text-gray-400"><i class="ri-money-dollar-circle-line"></i></div>
+            </div>
+            <input type="text" id="amount" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-button text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Entrez le montant (max. 20 000 000 Ar)">
+          </div>
+          <p id="amountError" class="text-red-500 text-xs hidden">Veuillez entrer un montant valide (1 – 20 000 000 Ar)</p>
+        </div>
+        
+        <div class="space-y-2">
+          <label class="block text-sm font-medium text-gray-700">Code généré</label>
+          <div class="relative">
+            <input type="text" id="result" class="block w-full pr-20 py-2 px-3 bg-gray-50 border border-gray-300 rounded-button text-gray-700 focus:outline-none" readonly placeholder="Le code apparaîtra ici">
+            <div class="absolute inset-y-0 right-0 flex items-center">
+              <button type="button" id="callBtn" class="px-2">
+                <div class="w-5 h-5 flex items-center justify-center text-gray-500 hover:text-primary"><i class="ri-phone-line"></i></div>
+              </button>
+              <button type="button" id="copyBtn" class="px-2">
+                <div class="w-5 h-5 flex items-center justify-center text-gray-500 hover:text-primary"><i class="ri-file-copy-line"></i></div>
+              </button>
+            </div>
+          </div>
+          <p id="copyMessage" class="text-green-500 text-xs text-center hidden">Copié dans le presse-papiers!</p>
+        </div>
+        
+        <div class="flex space-x-4">
+          <button type="button" id="generateBtn" class="flex-1 bg-primary hover:bg-primary/90 text-white py-2 px-4 rounded-button shadow-sm transition">Générer</button>
+          <button type="button" id="clearBtn" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 px-4 rounded-button shadow-sm transition">Effacer</button>
+        </div>
+      </form>
+      
+      <div id="historique" class="mt-8 border-t pt-6">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-lg font-medium text-gray-800">Historique</h2>
+          <div class="flex items-center gap-4">
+            <p class="text-sm text-gray-600">Total: <span id="totalAmount" class="font-medium">0 Ar</span></p>
+            <button type="button" id="clearHistoryBtn" class="text-sm text-red-500 hover:text-red-700">Effacer l'historique</button>
+          </div>
+        </div>
+        <div id="historyContainer" class="max-h-60 overflow-y-auto rounded-md border border-gray-200">
+          <ul id="historyList" class="divide-y divide-gray-200"></ul>
+        </div>
+        <p id="emptyHistory" class="text-gray-500 text-sm text-center py-4">Aucun historique</p>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const APP_CONFIG = {
+      maxHistoryEntries: 10,
+      localStorageKey: 'depotHistory',
+      phoneMaxLength: 10,
+      maxAmount: 20000000
+    };
+
+    const DOM = {
+      phoneInput: document.getElementById('phone'),
+      amountInput: document.getElementById('amount'),
+      resultInput: document.getElementById('result'),
+      generateBtn: document.getElementById('generateBtn'),
+      clearBtn: document.getElementById('clearBtn'),
+      callBtn: document.getElementById('callBtn'),
+      copyBtn: document.getElementById('copyBtn'),
+      phoneError: document.getElementById('phoneError'),
+      amountError: document.getElementById('amountError'),
+      copyMessage: document.getElementById('copyMessage'),
+      historyList: document.getElementById('historyList'),
+      emptyHistory: document.getElementById('emptyHistory'),
+      clearHistoryBtn: document.getElementById('clearHistoryBtn'),
+      historyContainer: document.getElementById('historyContainer'),
+      totalAmount: document.getElementById('totalAmount'),
+      openSidebarBtn: document.getElementById('openSidebar'),
+      closeSidebarBtn: document.getElementById('closeSidebar'),
+      overlay: document.getElementById('overlay'),
+      sidebar: document.querySelector('aside')
+    };
+
+    function formatNumber(x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    }
+
+    function formatNumberOnly(input) {
+      input.value = input.value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    }
+
+    function generateDepotCode(phone, amount) {
+      // Dépôt agent vers compte client
+      return `#111*1*4*3*${phone}*${amount}*2*1#`;
+    }
+
+    function extractAmountFromCode(code) {
+      const match = code.match(/\*(\d+)\*2\*1#$/);
+      return match ? parseInt(match[1], 10) : 0;
+    }
+
+    function extractPhoneFromCode(code) {
+      const match = code.match(/\*4\*3\*(\d+)\*\d+\*2\*1#$/);
+      return match ? match[1] : "";
+    }
+
+    function loadHistory() {
+      return JSON.parse(localStorage.getItem(APP_CONFIG.localStorageKey) || "[]");
+    }
+
+    function saveHistory(history) {
+      localStorage.setItem(APP_CONFIG.localStorageKey, JSON.stringify(history));
+    }
+
+    function addToHistory(code) {
+      const history = loadHistory();
+      history.unshift({ code, timestamp: new Date().toISOString() });
+      if (history.length > APP_CONFIG.maxHistoryEntries) history.pop();
+      saveHistory(history);
+      updateHistoryUI();
+    }
+
+    function updateHistoryUI() {
+      const history = loadHistory();
+      DOM.historyList.innerHTML = "";
+      let total = 0;
+      history.forEach((item) => {
+        const amount = extractAmountFromCode(item.code);
+        total += amount;
+        DOM.historyList.appendChild(createHistoryItem(item, amount));
+      });
+      DOM.totalAmount.textContent = formatNumber(total) + " Ar";
+      DOM.emptyHistory.classList.toggle("hidden", history.length > 0);
+      DOM.historyContainer.classList.toggle("hidden", history.length === 0);
+    }
+
+    function createHistoryItem(item, amount) {
+      const li = document.createElement("li");
+      li.className = "p-3 hover:bg-gray-50";
+      const phone = extractPhoneFromCode(item.code);
+      const date = new Date(item.timestamp).toLocaleDateString("fr-FR", {
+        day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit"
+      });
+      li.innerHTML = `
+        <div class="flex justify-between items-start gap-2">
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="text-xs font-medium px-2 py-0.5 rounded bg-green-100 text-green-700">Dépôt</span>
+              <span class="text-xs text-gray-500">${date}</span>
+            </div>
+            <p class="history-code text-sm font-medium text-gray-800 break-all">${item.code}</p>
+            <p class="text-xs text-gray-500 mt-1">${phone} · ${formatNumber(amount)} Ar</p>
+            <p class="history-copy-msg text-xs text-green-500 hidden">Copié!</p>
+          </div>
+          <div class="flex gap-2">
+            <button type="button" class="history-call-btn p-2 text-gray-500 hover:text-primary"><div class="w-5 h-5 flex items-center justify-center"><i class="ri-phone-line"></i></div></button>
+            <button type="button" class="history-copy-btn p-2 text-gray-500 hover:text-primary"><div class="w-5 h-5 flex items-center justify-center"><i class="ri-file-copy-line"></i></div></button>
+          </div>
+        </div>`;
+      return li;
+    }
+
+    function validatePhone(phone) {
+      return phone.length >= 8 && phone.length <= APP_CONFIG.phoneMaxLength;
+    }
+
+    function validateAmount(amount) {
+      const n = parseInt(amount, 10);
+      return !isNaN(n) && n >= 1 && n <= APP_CONFIG.maxAmount;
+    }
+
+    function validateForm() {
+      const phone = DOM.phoneInput.value.trim();
+      const amount = DOM.amountInput.value.replace(/\D/g, "");
+      let ok = true;
+      if (!validatePhone(phone)) {
+        DOM.phoneError.classList.remove("hidden");
+        ok = false;
+      } else {
+        DOM.phoneError.classList.add("hidden");
+      }
+      if (!validateAmount(amount)) {
+        DOM.amountError.classList.remove("hidden");
+        ok = false;
+      } else {
+        DOM.amountError.classList.add("hidden");
+      }
+      return ok;
+    }
+
+    function copyToClipboard(text) {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+    }
+
+    function openSidebar() {
+      DOM.sidebar.classList.remove("-translate-x-full");
+      DOM.overlay.classList.remove("hidden");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeSidebar() {
+      DOM.sidebar.classList.add("-translate-x-full");
+      DOM.overlay.classList.add("hidden");
+      document.body.style.overflow = "";
+    }
+
+    function initApp() {
+      DOM.phoneInput.addEventListener("input", (e) => {
+        let v = e.target.value.replace(/\D/g, "");
+        if (v.length > APP_CONFIG.phoneMaxLength) v = v.slice(0, APP_CONFIG.phoneMaxLength);
+        e.target.value = v;
+        DOM.phoneError.classList.toggle("hidden", validatePhone(v) || !v);
+      });
+
+      DOM.amountInput.addEventListener("input", (e) => {
+        formatNumberOnly(e.target);
+        const v = e.target.value.replace(/\D/g, "");
+        DOM.amountError.classList.toggle("hidden", validateAmount(v) || !v);
+      });
+
+      DOM.generateBtn.addEventListener("click", () => {
+        if (!validateForm()) return;
+        const phone = DOM.phoneInput.value.trim();
+        const amount = DOM.amountInput.value.replace(/\D/g, "");
+        const code = generateDepotCode(phone, amount);
+        DOM.resultInput.value = code;
+        addToHistory(code);
+      });
+
+      DOM.callBtn.addEventListener("click", () => {
+        if (DOM.resultInput.value) window.location.href = `tel:${DOM.resultInput.value}`;
+      });
+
+      DOM.copyBtn.addEventListener("click", () => {
+        if (!DOM.resultInput.value) return;
+        copyToClipboard(DOM.resultInput.value);
+        DOM.copyMessage.classList.remove("hidden");
+        setTimeout(() => DOM.copyMessage.classList.add("hidden"), 2000);
+      });
+
+      DOM.clearBtn.addEventListener("click", () => {
+        DOM.phoneInput.value = "";
+        DOM.amountInput.value = "";
+        DOM.resultInput.value = "";
+        DOM.phoneError.classList.add("hidden");
+        DOM.amountError.classList.add("hidden");
+        DOM.copyMessage.classList.add("hidden");
+      });
+
+      DOM.clearHistoryBtn.addEventListener("click", () => {
+        localStorage.removeItem(APP_CONFIG.localStorageKey);
+        updateHistoryUI();
+      });
+
+      document.addEventListener("click", (e) => {
+        if (e.target.closest(".history-copy-btn")) {
+          const code = e.target.closest("li").querySelector(".history-code").textContent;
+          copyToClipboard(code);
+          const msg = e.target.closest("li").querySelector(".history-copy-msg");
+          msg.classList.remove("hidden");
+          setTimeout(() => msg.classList.add("hidden"), 2000);
+        }
+        if (e.target.closest(".history-call-btn")) {
+          const code = e.target.closest("li").querySelector(".history-code").textContent;
+          window.location.href = `tel:${code}`;
+        }
+      });
+
+      DOM.openSidebarBtn.addEventListener("click", openSidebar);
+      DOM.closeSidebarBtn.addEventListener("click", closeSidebar);
+      DOM.overlay.addEventListener("click", closeSidebar);
+
+      document.querySelector('nav a[href="#historique"]')?.addEventListener("click", (e) => {
+        e.preventDefault();
+        document.getElementById("historique")?.scrollIntoView({ behavior: "smooth" });
+        if (window.innerWidth < 1024) closeSidebar();
+      });
+
+      window.addEventListener("resize", () => {
+        if (window.innerWidth >= 1024) closeSidebar();
+      });
+
+      updateHistoryUI();
+      if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
+    }
+
+    document.addEventListener("DOMContentLoaded", initApp);
+  </script>
+</body>
+</html>

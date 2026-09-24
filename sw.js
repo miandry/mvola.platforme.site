@@ -4,6 +4,11 @@ const OFFLINE_URL = '/offline.html';
 const urlsToCache = [
   '/',
   '/index.html',
+  '/epargne.html',
+  '/depot.html',
+  '/retrait.html',
+  '/solde.html',
+  '/transactions.html',
   '/tailwind.min.css',
   'https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css',
   'https://fonts.googleapis.com/css2?family=Pacifico&display=swap',
