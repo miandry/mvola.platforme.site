@@ -74,6 +74,10 @@ function formatNumberOnly(input) {
  * @returns {string} Le code Mvola généré
  */
 function generateMvolaCode(mvolaType, phone, amount) {
+  const key = mvolaType === "entreprise" ? "transfert_entreprise" : "transfert_personnes";
+  if (window.MvolaPatterns) {
+    return MvolaPatterns.apply(key, { phone: phone, amount: amount });
+  }
   if (mvolaType === "entreprise") {
     return `#111*1*3*2*${phone}*${amount}*2*1#`;
   } else {

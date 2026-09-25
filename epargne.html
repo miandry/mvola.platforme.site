@@ -110,6 +110,15 @@
 
       <div class="my-3 border-t border-gray-100"></div>
 
+      <a href="/parametres.html" data-page="parametres" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-primary transition">
+        <div class="w-5 h-5 flex items-center justify-center text-gray-400">
+          <i class="ri-settings-3-line"></i>
+        </div>
+        Paramètres
+      </a>
+
+      <div class="my-3 border-t border-gray-100"></div>
+
       <p class="px-3 py-2 text-xs font-semibold uppercase tracking-wide text-gray-400">Opération épargne</p>
 
       <a href="#depot" data-operation="depot" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-primary transition">
@@ -240,6 +249,7 @@
     </div>
   </main>
 
+  <script src="/js/ussd-patterns.js"></script>
   <script>
     const APP_CONFIG = {
       maxHistoryEntries: 10,
@@ -279,11 +289,8 @@
     }
 
     function generateEpargneCode(operation, amount) {
-      if (operation === "retrait") {
-        return `#111*1*3*1*2*${amount}*2*1#`;
-      }
-      // Dépôt Mvola → Épargne
-      return `#111*1*3*1*1*${amount}*2*1#`;
+      const key = operation === "retrait" ? "epargne_retrait" : "epargne_depot";
+      return MvolaPatterns.apply(key, { amount: amount });
     }
 
     function extractAmountFromCode(code) {
@@ -410,6 +417,16 @@
       document.body.style.overflow = "";
     }
 
+    function scrollHistoriqueToTop() {
+      const historique = document.getElementById("historique");
+      if (historique) {
+        historique.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      if (DOM.historyContainer) {
+        DOM.historyContainer.scrollTop = 0;
+      }
+    }
+
     function initApp() {
       DOM.operationSelect.addEventListener("change", () => {
         updateActiveNav(DOM.operationSelect.value);
@@ -429,6 +446,7 @@
         const code = generateEpargneCode(operation, amount);
         DOM.resultInput.value = code;
         addToHistory(code);
+        scrollHistoriqueToTop();
       });
 
       DOM.callBtn.addEventListener("click", function () {
@@ -450,6 +468,7 @@
         DOM.resultInput.value = "";
         DOM.amountError.classList.add("hidden");
         DOM.copyMessage.classList.add("hidden");
+        scrollHistoriqueToTop();
       });
 
       DOM.clearHistoryBtn.addEventListener("click", function () {

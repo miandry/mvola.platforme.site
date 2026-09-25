@@ -69,15 +69,9 @@
       </a>
 
       <div class="my-3 border-t border-gray-100"></div>
-      <p class="px-3 py-2 text-xs font-semibold uppercase tracking-wide text-gray-400">Type de retrait</p>
-
-      <a href="#agent" data-type="agent" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-primary transition">
-        <div class="w-5 h-5 flex items-center justify-center text-gray-400"><i class="ri-store-2-line"></i></div>
-        Agent / PoP
-      </a>
-      <a href="#dab" data-type="dab" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-primary transition">
-        <div class="w-5 h-5 flex items-center justify-center text-gray-400"><i class="ri-bank-card-line"></i></div>
-        DAB
+      <a href="/parametres.html" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-primary transition">
+        <div class="w-5 h-5 flex items-center justify-center text-gray-400"><i class="ri-settings-3-line"></i></div>
+        Paramètres
       </a>
 
       <div class="my-3 border-t border-gray-100"></div>
@@ -171,6 +165,7 @@
     </div>
   </main>
 
+  <script src="/js/ussd-patterns.js"></script>
   <script>
     const APP_CONFIG = { maxHistoryEntries: 10, localStorageKey: 'retraitHistory', maxAmount: 20000000 };
 
@@ -204,9 +199,8 @@
     }
 
     function generateRetraitCode(type, amount) {
-      // #111*1*4*1# agent | #111*1*4*2# DAB
-      if (type === "dab") return `#111*1*4*2*${amount}*2*1#`;
-      return `#111*1*4*1*${amount}*2*1#`;
+      const key = type === "dab" ? "retrait_dab" : "retrait_agent";
+      return MvolaPatterns.apply(key, { amount: amount });
     }
 
     function extractAmountFromCode(code) {
@@ -289,12 +283,6 @@
       document.body.removeChild(ta);
     }
 
-    function updateActiveNav(type) {
-      document.querySelectorAll("nav a.nav-link[data-type]").forEach((link) => {
-        link.classList.toggle("active", link.getAttribute("data-type") === type);
-      });
-    }
-
     function openSidebar() {
       DOM.sidebar.classList.remove("-translate-x-full");
       DOM.overlay.classList.remove("hidden");
@@ -307,10 +295,17 @@
       document.body.style.overflow = "";
     }
 
-    function initApp() {
-      DOM.typeSelect.addEventListener("change", () => updateActiveNav(DOM.typeSelect.value));
-      updateActiveNav(DOM.typeSelect.value);
+    function scrollHistoriqueToTop() {
+      const historique = document.getElementById("historique");
+      if (historique) {
+        historique.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      if (DOM.historyContainer) {
+        DOM.historyContainer.scrollTop = 0;
+      }
+    }
 
+    function initApp() {
       DOM.amountInput.addEventListener("input", (e) => {
         formatNumberOnly(e.target);
         const v = e.target.value.replace(/\D/g, "");
@@ -327,6 +322,7 @@
         const code = generateRetraitCode(DOM.typeSelect.value, amount);
         DOM.resultInput.value = code;
         addToHistory(code);
+        scrollHistoriqueToTop();
       });
 
       DOM.callBtn.addEventListener("click", () => {
@@ -345,6 +341,7 @@
         DOM.resultInput.value = "";
         DOM.amountError.classList.add("hidden");
         DOM.copyMessage.classList.add("hidden");
+        scrollHistoriqueToTop();
       });
 
       DOM.clearHistoryBtn.addEventListener("click", () => {
@@ -369,16 +366,6 @@
       DOM.openSidebarBtn.addEventListener("click", openSidebar);
       DOM.closeSidebarBtn.addEventListener("click", closeSidebar);
       DOM.overlay.addEventListener("click", closeSidebar);
-
-      document.querySelectorAll("nav a.nav-link[data-type]").forEach((link) => {
-        link.addEventListener("click", (e) => {
-          e.preventDefault();
-          DOM.typeSelect.value = link.getAttribute("data-type");
-          updateActiveNav(DOM.typeSelect.value);
-          document.getElementById("generer")?.scrollIntoView({ behavior: "smooth" });
-          if (window.innerWidth < 1024) closeSidebar();
-        });
-      });
 
       document.querySelector('nav a[href="#historique"]')?.addEventListener("click", (e) => {
         e.preventDefault();

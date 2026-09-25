@@ -66,6 +66,12 @@
       </a>
 
       <div class="my-3 border-t border-gray-100"></div>
+      <a href="/parametres.html" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-primary transition">
+        <div class="w-5 h-5 flex items-center justify-center text-gray-400"><i class="ri-settings-3-line"></i></div>
+        Paramètres
+      </a>
+
+      <div class="my-3 border-t border-gray-100"></div>
       <p class="px-3 py-2 text-xs font-semibold uppercase tracking-wide text-gray-400">Compte</p>
 
       <a href="#mvola" data-account="mvola" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-primary transition">
@@ -139,12 +145,8 @@
     </div>
   </main>
 
+  <script src="/js/ussd-patterns.js"></script>
   <script>
-    const CODES = {
-      mvola: '#111*1*5#',
-      epargne: '#111*1*3*1*5#'
-    };
-
     const DOM = {
       accountSelect: document.getElementById('accountType'),
       resultInput: document.getElementById('result'),
@@ -159,7 +161,8 @@
 
     function updateCode() {
       const type = DOM.accountSelect.value;
-      DOM.resultInput.value = CODES[type];
+      const key = type === "epargne" ? "transactions_epargne" : "transactions_mvola";
+      DOM.resultInput.value = MvolaPatterns.apply(key);
       document.querySelectorAll('nav a.nav-link[data-account]').forEach((link) => {
         link.classList.toggle('active', link.getAttribute('data-account') === type);
       });

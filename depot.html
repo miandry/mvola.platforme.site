@@ -69,6 +69,12 @@
       </a>
 
       <div class="my-3 border-t border-gray-100"></div>
+      <a href="/parametres.html" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-primary transition">
+        <div class="w-5 h-5 flex items-center justify-center text-gray-400"><i class="ri-settings-3-line"></i></div>
+        Paramètres
+      </a>
+
+      <div class="my-3 border-t border-gray-100"></div>
       <a href="#historique" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-primary transition">
         <div class="w-5 h-5 flex items-center justify-center text-gray-400"><i class="ri-history-line"></i></div>
         Historique
@@ -154,6 +160,7 @@
     </div>
   </main>
 
+  <script src="/js/ussd-patterns.js"></script>
   <script>
     const APP_CONFIG = {
       maxHistoryEntries: 10,
@@ -193,8 +200,7 @@
     }
 
     function generateDepotCode(phone, amount) {
-      // Dépôt agent vers compte client
-      return `#111*1*4*3*${phone}*${amount}*2*1#`;
+      return MvolaPatterns.apply("depot", { phone: phone, amount: amount });
     }
 
     function extractAmountFromCode(code) {
@@ -312,6 +318,16 @@
       document.body.style.overflow = "";
     }
 
+    function scrollHistoriqueToTop() {
+      const historique = document.getElementById("historique");
+      if (historique) {
+        historique.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      if (DOM.historyContainer) {
+        DOM.historyContainer.scrollTop = 0;
+      }
+    }
+
     function initApp() {
       DOM.phoneInput.addEventListener("input", (e) => {
         let v = e.target.value.replace(/\D/g, "");
@@ -333,6 +349,7 @@
         const code = generateDepotCode(phone, amount);
         DOM.resultInput.value = code;
         addToHistory(code);
+        scrollHistoriqueToTop();
       });
 
       DOM.callBtn.addEventListener("click", () => {
@@ -353,6 +370,7 @@
         DOM.phoneError.classList.add("hidden");
         DOM.amountError.classList.add("hidden");
         DOM.copyMessage.classList.add("hidden");
+        scrollHistoriqueToTop();
       });
 
       DOM.clearHistoryBtn.addEventListener("click", () => {

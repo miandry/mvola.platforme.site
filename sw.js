@@ -1,5 +1,5 @@
 
-const CACHE_NAME = 'pwa-cache-v1';
+const CACHE_NAME = 'pwa-cache-v2';
 const OFFLINE_URL = '/offline.html';
 const urlsToCache = [
   '/',
@@ -9,6 +9,8 @@ const urlsToCache = [
   '/retrait.html',
   '/solde.html',
   '/transactions.html',
+  '/parametres.html',
+  '/js/ussd-patterns.js',
   '/tailwind.min.css',
   'https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css',
   'https://fonts.googleapis.com/css2?family=Pacifico&display=swap',

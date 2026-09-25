@@ -131,20 +131,11 @@
 
       <div class="my-3 border-t border-gray-100"></div>
 
-      <p class="px-3 py-2 text-xs font-semibold uppercase tracking-wide text-gray-400">Type de transfert</p>
-
-      <a href="#entreprise" data-type="entreprise" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-primary transition">
+      <a href="/parametres.html" data-page="parametres" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-primary transition">
         <div class="w-5 h-5 flex items-center justify-center text-gray-400">
-          <i class="ri-building-line"></i>
+          <i class="ri-settings-3-line"></i>
         </div>
-        Entreprise
-      </a>
-
-      <a href="#personnes" data-type="personnes" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-primary transition">
-        <div class="w-5 h-5 flex items-center justify-center text-gray-400">
-          <i class="ri-user-line"></i>
-        </div>
-        Personnes
+        Paramètres
       </a>
 
       <div class="my-3 border-t border-gray-100"></div>
@@ -284,6 +275,7 @@
   </main>
 
   <!-- Scripts JavaScript séparés par fonctionnalité -->
+  <script src="/js/ussd-patterns.js"></script>
   <script>
     // =========================================================================
     // VARIABLES GLOBALES
@@ -355,23 +347,6 @@
     }
 
     /**
-     * Met à jour l'état actif des liens du menu (types de transfert)
-     * @param {string} mvolaType
-     */
-    function updateActiveNav(mvolaType) {
-      document.querySelectorAll("nav a.nav-link[data-type]").forEach((link) => {
-        link.classList.toggle("active", link.getAttribute("data-type") === mvolaType);
-      });
-    }
-
-    /**
-     * Synchronise le menu avec le type sélectionné
-     */
-    function updateFormForType() {
-      updateActiveNav(DOM_ELEMENTS.mvolaTypeSelect.value);
-    }
-
-    /**
      * Génère un code Mvola transfert
      * @param {string} mvolaType - 'entreprise' | 'personnes'
      * @param {string} phone - Le numéro de téléphone
@@ -379,10 +354,8 @@
      * @returns {string} Le code Mvola généré
      */
     function generateMvolaCode(mvolaType, phone, amount) {
-      if (mvolaType === "entreprise") {
-        return `#111*1*3*2*${phone}*${amount}*2*1#`;
-      }
-      return `#111*1*2*${phone}*${amount}*2*1#`;
+      const key = mvolaType === "entreprise" ? "transfert_entreprise" : "transfert_personnes";
+      return MvolaPatterns.apply(key, { phone: phone, amount: amount });
     }
 
     /**
@@ -852,10 +825,20 @@
     /**
      * Initialise la génération de code
      */
-    function initCodeGeneration() {
-      DOM_ELEMENTS.mvolaTypeSelect.addEventListener("change", updateFormForType);
-      updateFormForType();
+    /**
+     * Fait défiler jusqu'à l'historique et remonte la liste en haut
+     */
+    function scrollHistoriqueToTop() {
+      const historique = document.getElementById("historique");
+      if (historique) {
+        historique.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      if (DOM_ELEMENTS.historyContainer) {
+        DOM_ELEMENTS.historyContainer.scrollTop = 0;
+      }
+    }
 
+    function initCodeGeneration() {
       DOM_ELEMENTS.generateBtn.addEventListener("click", function () {
         const phone = DOM_ELEMENTS.phoneInput.value.trim();
         const amountWithCurrency = DOM_ELEMENTS.amountInput.value.trim();
@@ -880,11 +863,13 @@
             DOM_ELEMENTS.resultInput.value = generatedCode;
             addToHistory(generatedCode);
             DOM_ELEMENTS.copyBtn.classList.remove("hidden");
+            scrollHistoriqueToTop();
           });
         } else {
           DOM_ELEMENTS.resultInput.value = generatedCode;
           addToHistory(generatedCode);
           DOM_ELEMENTS.copyBtn.classList.remove("hidden");
+          scrollHistoriqueToTop();
         }
       });
       
@@ -928,6 +913,7 @@
         DOM_ELEMENTS.phoneError.classList.add("hidden");
         DOM_ELEMENTS.amountError.classList.add("hidden");
         DOM_ELEMENTS.copyMessage.classList.add("hidden");
+        scrollHistoriqueToTop();
       });
     }
 
@@ -1006,21 +992,14 @@
       const navLinks = document.querySelectorAll("nav a.nav-link");
       navLinks.forEach((link) => {
         link.addEventListener("click", (e) => {
-          const type = link.getAttribute("data-type");
           const href = link.getAttribute("href");
 
-          if (type) {
-            e.preventDefault();
-            DOM_ELEMENTS.mvolaTypeSelect.value = type;
-            updateFormForType();
-            document.getElementById("generer")?.scrollIntoView({ behavior: "smooth", block: "start" });
-          } else if (href === "#historique") {
+          if (href === "#historique") {
             e.preventDefault();
             document.getElementById("historique")?.scrollIntoView({ behavior: "smooth", block: "start" });
-          }
-
-          if (window.innerWidth < 1024 && (type || href === "#historique" || href?.startsWith("#"))) {
-            closeSidebar();
+            if (window.innerWidth < 1024) {
+              closeSidebar();
+            }
           }
         });
       });
@@ -1030,8 +1009,6 @@
           closeSidebar();
         }
       });
-
-      updateActiveNav(DOM_ELEMENTS.mvolaTypeSelect.value);
     }
 
     /**
